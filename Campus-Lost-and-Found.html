@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Lost & Found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+primary: '#3b82f6',
+secondary: '#6366f1'
+},
+borderRadius: {
+'none': '0px',
+'sm': '4px',
+DEFAULT: '8px',
+'md': '12px',
+'lg': '16px',
+'xl': '20px',
+'2xl': '24px',
+'3xl': '32px',
+'full': '9999px',
+'button': '8px'
+}
+}
+}
+}
+</script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+/* Custom styles */
+.custom-checkbox {
+position: relative;
+display: inline-block;
+width: 20px;
+height: 20px;
+border-radius: 4px;
+border: 2px solid #cbd5e1;
+background-color: white;
+cursor: pointer;
+transition: all 0.2s;
+}
+.custom-checkbox.checked {
+background-color: #3b82f6;
+border-color: #3b82f6;
+}
+.custom-checkbox.checked::after {
+content: '';
+position: absolute;
+left: 6px;
+top: 2px;
+width: 6px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 40px;
+height: 20px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e2e8f0;
+transition: .4s;
+border-radius: 34px;
+}
+.slider:before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 2px;
+bottom: 2px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .slider {
+background-color: #3b82f6;
+}
+input:checked + .slider:before {
+transform: translateX(20px);
+}
+.custom-range {
+-webkit-appearance: none;
+width: 100%;
+height: 6px;
+border-radius: 5px;
+background: #e2e8f0;
+outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #3b82f6;
+cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #3b82f6;
+cursor: pointer;
+border: none;
+}
+.map-container {
+background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png');
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+}
+.notification-dot {
+position: absolute;
+top: -2px;
+right: -2px;
+width: 8px;
+height: 8px;
+background-color: #ef4444;
+border-radius: 50%;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.pin-lost {
+width: 20px;
+height: 20px;
+background-color: #ef4444;
+border-radius: 50% 50% 50% 0;
+transform: rotate(-45deg);
+position: absolute;
+}
+.pin-found {
+width: 20px;
+height: 20px;
+background-color: #10b981;
+border-radius: 50% 50% 50% 0;
+transform: rotate(-45deg);
+position: absolute;
+}
+.pin-inner {
+width: 10px;
+height: 10px;
+background-color: white;
+border-radius: 50%;
+position: absolute;
+top: 5px;
+left: 5px;
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<!-- Header & Navigation -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+<h1 class="text-xl font-semibold text-gray-800">Campus Lost & Found</h1>
+</div>
+<nav class="hidden md:flex items-center space-x-6">
+<a href="#" class="text-primary font-medium">Home</a>
+<a href="My-Submitted-Reports.html" data-readdy="true" class="text-gray-600 hover:text-primary transition-colors">Submit Report</a>
+<a href="#" class="text-gray-600 hover:text-primary transition-colors">My Reports</a>
+<a href="#" class="text-gray-600 hover:text-primary transition-colors">Profile</a>
+</nav>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<div class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary cursor-pointer relative">
+<i class="ri-notification-3-line ri-lg"></i>
+<span class="notification-dot"></span>
+</div>
+</div>
+<a href="Campus-Lost-and-Found lost and found.html"><button class="bg-white text-primary border border-primary px-4 py-2 rounded-button hover:bg-primary hover:text-white transition-colors whitespace-nowrap">Log In</button></a>
+<a href="#"><button class="bg-primary text-white px-4 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Register</button></a>
+</div>
+</div>
+</header>
+<!-- Search Bar -->
+<div class="bg-white border-b">
+<div class="container mx-auto px-4 py-4">
+<div class="flex items-center">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<i class="ri-search-line text-gray-400"></i>
+</div>
+<input type="text" placeholder="Search for lost or found items..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+</div>
+<button class="ml-3 bg-primary text-white px-4 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">
+<i class="ri-filter-3-line mr-1"></i> Filters
+</button>
+</div>
+</div>
+</div>
+<!-- Filter Section -->
+<div class="bg-white border-b">
+<div class="container mx-auto px-4 py-3">
+<div class="flex flex-wrap items-center gap-3">
+<div class="relative">
+<select class="appearance-none bg-gray-100 text-gray-700 py-2 pl-3 pr-8 rounded border-none cursor-pointer text-sm">
+<option>All Categories</option>
+<option>Electronics</option>
+<option>Books</option>
+<option>ID Cards</option>
+<option>Keys</option>
+<option>Clothing</option>
+<option>Accessories</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-gray-100 text-gray-700 py-2 pl-3 pr-8 rounded border-none cursor-pointer text-sm">
+<option>All Status</option>
+<option>Lost</option>
+<option>Found</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-gray-100 text-gray-700 py-2 pl-3 pr-8 rounded border-none cursor-pointer text-sm">
+<option>Last 7 days</option>
+<option>Last 30 days</option>
+<option>Last 3 months</option>
+<option>All time</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-gray-100 text-gray-700 py-2 pl-3 pr-8 rounded border-none cursor-pointer text-sm">
+<option>All Locations</option>
+<option>Library</option>
+<option>Student Center</option>
+<option>Cafeteria</option>
+<option>Dorms</option>
+<option>Sports Complex</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+<div class="flex items-center gap-2 ml-auto">
+<button class="bg-gray-100 p-2 rounded hover:bg-gray-200 transition-colors">
+<i class="ri-list-unordered"></i>
+</button>
+<button class="bg-gray-100 p-2 rounded hover:bg-gray-200 transition-colors">
+<i class="ri-grid-line"></i>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">Electronics</span>
+<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">ID Cards</span>
+<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">Keys</span>
+<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">Water Bottles</span>
+<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-gray-200">Backpacks</span>
+</div>
+</div>
+</div>
+<!-- Main Dashboard Layout -->
+<main class="flex-grow container mx-auto px-4 py-6">
+<div class="flex flex-col lg:flex-row gap-6">
+<!-- Map Section -->
+<div class="w-full lg:w-3/5">
+<div class="bg-white rounded shadow-sm overflow-hidden">
+<div class="p-4 border-b flex justify-between items-center">
+<h2 class="text-lg font-medium text-gray-800">Item Locations</h2>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1">
+<div class="w-3 h-3 bg-red-500 rounded-full"></div>
+<span class="text-sm text-gray-600">Lost</span>
+</div>
+<div class="flex items-center gap-1">
+<div class="w-3 h-3 bg-green-500 rounded-full"></div>
+<span class="text-sm text-gray-600">Found</span>
+</div>
+</div>
+</div>
+<div class="relative map-container h-[500px]">
+<!-- Map Pins -->
+<div class="pin-lost" style="top: 150px; left: 300px;">
+<div class="pin-inner"></div>
+</div>
+<div class="pin-lost" style="top: 220px; left: 450px;">
+<div class="pin-inner"></div>
+</div>
+<div class="pin-found" style="top: 320px; left: 250px;">
+<div class="pin-inner"></div>
+</div>
+<div class="pin-found" style="top: 180px; left: 600px;">
+<div class="pin-inner"></div>
+</div>
+<div class="pin-lost" style="top: 400px; left: 500px;">
+<div class="pin-inner"></div>
+</div>
+<!-- Map Controls -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2">
+<button class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-add-line"></i>
+</button>
+<button class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-subtract-line"></i>
+</button>
+<button class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-map-pin-user-line"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item List -->
+<div class="w-full lg:w-2/5">
+<div class="bg-white rounded shadow-sm">
+<div class="p-4 border-b">
+<h2 class="text-lg font-medium text-gray-800">Recent Items</h2>
+</div>
+<div class="divide-y">
+<!-- Item 1 -->
+<div class="p-4 hover:bg-gray-50 transition-colors">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+<img src="https://readdy.ai/api/search-image?query=a%20professional%20photo%20of%20a%20black%20macbook%20pro%20laptop%20on%20a%20white%20background%2C%20minimalist%20style%2C%20high%20quality%20product%20photography&width=200&height=200&seq=1&orientation=squarish" alt="MacBook Pro" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-medium text-gray-800">MacBook Pro 13"</h3>
+<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">Lost</span>
+</div>
+<p class="text-sm text-gray-600 mt-1">Lost at University Library, 2nd floor study area</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">June 15, 2025</span>
+<button class="text-primary text-sm hover:underline">Contact</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-4 hover:bg-gray-50 transition-colors">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+<img src="https://readdy.ai/api/search-image?query=a%20professional%20photo%20of%20a%20blue%20hydroflask%20water%20bottle%20on%20a%20white%20background%2C%20minimalist%20style%2C%20high%20quality%20product%20photography&width=200&height=200&seq=2&orientation=squarish" alt="Water Bottle" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-medium text-gray-800">Blue Hydroflask</h3>
+<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Found</span>
+</div>
+<p class="text-sm text-gray-600 mt-1">Found at Science Building Room 302</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">June 14, 2025</span>
+<button class="text-primary text-sm hover:underline">Contact</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="p-4 hover:bg-gray-50 transition-colors">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+<img src="school id pic.jpg" alt="Student ID" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-medium text-gray-800">Student ID Card</h3>
+<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Found</span>
+</div>
+<p class="text-sm text-gray-600 mt-1">Found at Student Center near the cafe</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">June 14, 2025</span>
+<button class="text-primary text-sm hover:underline">Contact</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="p-4 hover:bg-gray-50 transition-colors">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+<img src="https://readdy.ai/api/search-image?query=a%20professional%20photo%20of%20a%20set%20of%20keys%20with%20a%20keychain%20on%20a%20white%20background%2C%20minimalist%20style%2C%20high%20quality%20product%20photography&width=200&height=200&seq=4&orientation=squarish" alt="Keys" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-medium text-gray-800">Keys with Red Keychain</h3>
+<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">Lost</span>
+</div>
+<p class="text-sm text-gray-600 mt-1">Lost near Engineering Building parking lot</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">June 13, 2025</span>
+<button class="text-primary text-sm hover:underline">Contact</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="p-4 hover:bg-gray-50 transition-colors">
+<div class="flex gap-4">
+<div class="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+<img src="https://readdy.ai/api/search-image?query=a%20professional%20photo%20of%20a%20black%20backpack%20on%20a%20white%20background%2C%20minimalist%20style%2C%20high%20quality%20product%20photography&width=200&height=200&seq=5&orientation=squarish" alt="Backpack" class="w-full h-full object-cover object-top">
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-medium text-gray-800">Black North Face Backpack</h3>
+<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">Lost</span>
+</div>
+<p class="text-sm text-gray-600 mt-1">Lost at Campus Cafeteria</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">June 12, 2025</span>
+<button class="text-primary text-sm hover:underline">Contact</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t text-center">
+<button class="text-primary hover:underline">View All Items</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Submit Report Section -->
+<div class="mt-8">
+<div class="bg-white rounded shadow-sm overflow-hidden">
+<div class="p-4 border-b">
+<h2 class="text-lg font-medium text-gray-800">Submit a Report</h2>
+</div>
+<div class="p-6">
+<form>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Item Status</label>
+<div class="flex gap-4">
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox checked" id="lost-checkbox"></div>
+<span>Lost</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox" id="found-checkbox"></div>
+<span>Found</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Item Category</label>
+<div class="relative">
+<select class="w-full appearance-none bg-white border border-gray-300 rounded py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+<option>Select a category</option>
+<option>Electronics</option>
+<option>Books</option>
+<option>ID Cards</option>
+<option>Keys</option>
+<option>Clothing</option>
+<option>Accessories</option>
+<option>Other</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. MacBook Pro, Student ID Card">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+<input type="date" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+</div>
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. Library 2nd Floor, Student Center">
+</div>
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+<textarea class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-24" placeholder="Provide details about the item..."></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Upload Photo</label>
+<div class="border border-dashed border-gray-300 rounded p-4 text-center">
+<div class="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-gray-100 rounded-full text-gray-400">
+<i class="ri-image-add-line ri-xl"></i>
+</div>
+<p class="text-sm text-gray-500">Drag and drop or click to upload</p>
+<input type="file" class="hidden" id="photo-upload">
+<button type="button" class="mt-2 text-sm text-primary hover:underline" onclick="document.getElementById('photo-upload').click()">Browse Files</button>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Contact Information</label>
+<div class="space-y-3">
+<div>
+<input type="email" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Email">
+</div>
+<div>
+<input type="tel" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Phone (optional)">
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex items-center">
+<label class="custom-switch">
+<input type="checkbox" checked>
+<span class="slider"></span>
+</label>
+<span class="ml-2 text-sm text-gray-600">Notify me when potential matches are found</span>
+</div>
+<div class="mt-6">
+<button type="submit" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Submit Report</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white border-t mt-8">
+<div class="container mx-auto px-4 py-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div>
+<div class="flex items-center space-x-2 mb-4">
+<span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+<h2 class="text-lg font-semibold text-gray-800">Campus Lost & Found</h2>
+</div>
+<p class="text-gray-600 text-sm">Helping campus community members reconnect with their lost belongings since 2025.</p>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Quick Links</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="Campus-Lost-and-Found.html" class="text-gray-600 hover:text-primary">Home</a></li>
+<li><a href="Submit-Lost-or-Found-Report.html" class="text-gray-600 hover:text-primary">Submit Report</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">My Reports</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">FAQ</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Support</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="" class="text-gray-600 hover:text-primary">Contact Us</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Help Center</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Report an Issue</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Feedback</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Legal</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="#" class="text-gray-600 hover:text-primary">Terms of Service</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Privacy Policy</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+<p class="text-sm text-gray-600">© 2025 Campus Lost & Found. All rights reserved.</p>
+<div class="flex space-x-4 mt-4 md:mt-0">
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-facebook-fill ri-lg"></i>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-twitter-fill ri-lg"></i>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-instagram-fill ri-lg"></i>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- Scripts -->
+<script id="checkbox-script">
+document.addEventListener('DOMContentLoaded', function() {
+const lostCheckbox = document.getElementById('lost-checkbox');
+const foundCheckbox = document.getElementById('found-checkbox');
+lostCheckbox.addEventListener('click', function() {
+lostCheckbox.classList.add('checked');
+foundCheckbox.classList.remove('checked');
+});
+foundCheckbox.addEventListener('click', function() {
+foundCheckbox.classList.add('checked');
+lostCheckbox.classList.remove('checked');
+});
+});
+</script>
+</body>
+</html>

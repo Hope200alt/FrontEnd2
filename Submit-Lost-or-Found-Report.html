@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Report - Campus Lost & Found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+primary: '#3b82f6',
+secondary: '#6366f1'
+},
+borderRadius: {
+'none': '0px',
+'sm': '4px',
+DEFAULT: '8px',
+'md': '12px',
+'lg': '16px',
+'xl': '20px',
+'2xl': '24px',
+'3xl': '32px',
+'full': '9999px',
+'button': '8px'
+}
+}
+}
+}
+</script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+.custom-checkbox {
+position: relative;
+display: inline-block;
+width: 20px;
+height: 20px;
+border-radius: 4px;
+border: 2px solid #cbd5e1;
+background-color: white;
+cursor: pointer;
+transition: all 0.2s;
+}
+.custom-checkbox.checked {
+background-color: #3b82f6;
+border-color: #3b82f6;
+}
+.custom-checkbox.checked::after {
+content: '';
+position: absolute;
+left: 6px;
+top: 2px;
+width: 6px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 40px;
+height: 20px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e2e8f0;
+transition: .4s;
+border-radius: 34px;
+}
+.slider:before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 2px;
+bottom: 2px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .slider {
+background-color: #3b82f6;
+}
+input:checked + .slider:before {
+transform: translateX(20px);
+}
+.custom-range {
+-webkit-appearance: none;
+width: 100%;
+height: 6px;
+border-radius: 5px;
+background: #e2e8f0;
+outline: none;
+}
+.custom-range::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #3b82f6;
+cursor: pointer;
+}
+.custom-range::-moz-range-thumb {
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #3b82f6;
+cursor: pointer;
+border: none;
+}
+.map-container {
+background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png');
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.map-pin {
+position: absolute;
+width: 24px;
+height: 24px;
+transform: translate(-50%, -100%);
+cursor: pointer;
+}
+.progress-step {
+position: relative;
+}
+.progress-step::after {
+content: '';
+position: absolute;
+top: 50%;
+left: 100%;
+height: 2px;
+width: 100%;
+background-color: #e5e7eb;
+transform: translateY(-50%);
+}
+.progress-step:last-child::after {
+display: none;
+}
+.progress-step.active .step-number {
+background-color: #3b82f6;
+color: white;
+border-color: #3b82f6;
+}
+.progress-step.completed .step-number {
+background-color: #10b981;
+color: white;
+border-color: #10b981;
+}
+.progress-step.completed::after {
+background-color: #10b981;
+}
+.progress-step.active::after {
+background-color: #e5e7eb;
+}
+.drag-drop-zone {
+border: 2px dashed #cbd5e1;
+border-radius: 8px;
+transition: all 0.2s;
+}
+.drag-drop-zone.drag-over {
+border-color: #3b82f6;
+background-color: rgba(59, 130, 246, 0.05);
+}
+.color-swatch {
+width: 24px;
+height: 24px;
+border-radius: 50%;
+cursor: pointer;
+transition: transform 0.2s;
+}
+.color-swatch:hover {
+transform: scale(1.1);
+}
+.color-swatch.selected {
+box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<!-- Header & Navigation -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+<h1 class="text-xl font-semibold text-gray-800">Campus Lost & Found</h1>
+</div>
+<nav class="hidden md:flex items-center space-x-6">
+<a href="Campus-Lost-and-Found.html" data-readdy="true" class="text-gray-600 hover:text-primary transition-colors">Home</a>
+<a href="Submit-Lost-or-Found-Report.html" class="text-primary font-medium">Submit Report</a>
+<a href="My-Submitted-Reports.html" data-readdy="true" class="text-gray-600 hover:text-primary transition-colors">My Reports</a>
+<a href="#" class="text-gray-600 hover:text-primary transition-colors">Profile</a>
+</nav>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<div class="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary cursor-pointer relative">
+<i class="ri-notification-3-line ri-lg"></i>
+</div>
+</div>
+<button class="bg-white text-primary border border-primary px-4 py-2 rounded-button hover:bg-primary hover:text-white transition-colors whitespace-nowrap">Log In</button>
+<button class="bg-primary text-white px-4 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Register</button>
+</div>
+</div>
+</header>
+<!-- Progress Bar -->
+<div class="bg-white border-b">
+<div class="container mx-auto px-4 py-4">
+<div class="flex items-center justify-between">
+<a href="https://readdy.ai/home/d572bb9d-cf94-46fe-8d8f-0fa6f19de4c8/8a67f91f-86cc-47f0-aecd-12694c845859" data-readdy="true" class="flex items-center text-gray-600 hover:text-primary transition-colors">
+<i class="ri-arrow-left-line mr-1"></i> Back to Home
+</a>
+<h2 class="text-xl font-semibold text-gray-800 hidden sm:block">Submit Report</h2>
+<div class="w-32"></div>
+</div>
+</div>
+</div>
+<!-- Progress Steps -->
+<div class="bg-white border-b">
+<div class="container mx-auto px-4 py-4">
+<div class="flex justify-between max-w-3xl mx-auto">
+<div class="progress-step active flex flex-col items-center w-1/4">
+<div class="step-number w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-sm font-medium mb-2">1</div>
+<span class="text-xs text-gray-600 text-center">Basic Info</span>
+</div>
+<div class="progress-step flex flex-col items-center w-1/4">
+<div class="step-number w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-sm font-medium mb-2">2</div>
+<span class="text-xs text-gray-600 text-center">Item Details</span>
+</div>
+<div class="progress-step flex flex-col items-center w-1/4">
+<div class="step-number w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-sm font-medium mb-2">3</div>
+<span class="text-xs text-gray-600 text-center">Location</span>
+</div>
+<div class="progress-step flex flex-col items-center w-1/4">
+<div class="step-number w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-sm font-medium mb-2">4</div>
+<span class="text-xs text-gray-600 text-center">Contact</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Form -->
+<main class="flex-grow container mx-auto px-4 py-6">
+<div class="max-w-4xl mx-auto">
+<form id="report-form">
+<!-- Step 1: Basic Information -->
+<div id="step-1" class="form-step bg-white rounded shadow-sm overflow-hidden mb-6">
+<div class="p-4 border-b flex justify-between items-center">
+<h3 class="text-lg font-medium text-gray-800">Basic Information</h3>
+<button type="button" class="text-gray-400 hover:text-gray-600" id="toggle-step-1">
+<i class="ri-arrow-up-s-line ri-lg"></i>
+</button>
+</div>
+<div class="p-6 step-content">
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Item Status</label>
+<div class="flex gap-6">
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox checked" id="lost-checkbox"></div>
+<span>Lost Item</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox" id="found-checkbox"></div>
+<span>Found Item</span>
+</label>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Item Category</label>
+<div class="relative">
+<select class="w-full appearance-none bg-white border border-gray-300 rounded py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+<option>Select a category</option>
+<option>Electronics</option>
+<option>Books & Documents</option>
+<option>ID Cards & Wallets</option>
+<option>Keys & Access Cards</option>
+<option>Clothing & Accessories</option>
+<option>Bags & Luggage</option>
+<option>Personal Items</option>
+<option>Other</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Item Name</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. MacBook Pro, Student ID Card">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+<input type="date" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+</div>
+</div>
+<div class="mt-6 flex justify-end">
+<button type="button" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap" id="next-to-step-2">Continue to Item Details</button>
+</div>
+</div>
+</div>
+<!-- Step 2: Item Details -->
+<div id="step-2" class="form-step bg-white rounded shadow-sm overflow-hidden mb-6 hidden">
+<div class="p-4 border-b flex justify-between items-center">
+<h3 class="text-lg font-medium text-gray-800">Item Details</h3>
+<button type="button" class="text-gray-400 hover:text-gray-600" id="toggle-step-2">
+<i class="ri-arrow-up-s-line ri-lg"></i>
+</button>
+</div>
+<div class="p-6 step-content">
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Item Description</label>
+<textarea class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-24" placeholder="Provide detailed description of the item..."></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Brand</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. Apple, Nike, etc.">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Model (if applicable)</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. iPhone 13, Air Jordan">
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+<div class="flex flex-wrap gap-3 mt-1">
+<div class="color-swatch selected" style="background-color: #000000;" data-color="Black"></div>
+<div class="color-swatch" style="background-color: #ffffff; border: 1px solid #e5e7eb;" data-color="White"></div>
+<div class="color-swatch" style="background-color: #ef4444;" data-color="Red"></div>
+<div class="color-swatch" style="background-color: #3b82f6;" data-color="Blue"></div>
+<div class="color-swatch" style="background-color: #10b981;" data-color="Green"></div>
+<div class="color-swatch" style="background-color: #f59e0b;" data-color="Yellow"></div>
+<div class="color-swatch" style="background-color: #8b5cf6;" data-color="Purple"></div>
+<div class="color-swatch" style="background-color: #ec4899;" data-color="Pink"></div>
+<div class="color-swatch" style="background-color: #6b7280;" data-color="Gray"></div>
+<div class="color-swatch" style="background-color: #78350f;" data-color="Brown"></div>
+<input type="hidden" id="selected-color" value="Black">
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Upload Photos</label>
+<div class="drag-drop-zone p-6 text-center" id="drop-zone">
+<div class="w-16 h-16 mx-auto mb-3 flex items-center justify-center bg-gray-100 rounded-full text-gray-400">
+<i class="ri-image-add-line ri-2x"></i>
+</div>
+<p class="text-sm text-gray-600 mb-2">Drag and drop photos here or click to browse</p>
+<p class="text-xs text-gray-500 mb-3">Up to 5 photos, max 5MB each</p>
+<input type="file" class="hidden" id="photo-upload" multiple accept="image/*">
+<button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-button text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap" onclick="document.getElementById('photo-upload').click()">
+<i class="ri-upload-2-line mr-2"></i> Upload Photos
+</button>
+</div>
+<div class="grid grid-cols-5 gap-3 mt-4" id="preview-container">
+</div>
+</div>
+<div class="mb-6" id="reward-section">
+<label class="block text-sm font-medium text-gray-700 mb-2">Reward (optional)</label>
+<div class="flex items-center mb-3">
+<label class="custom-switch mr-3">
+<input type="checkbox" id="reward-toggle">
+<span class="slider"></span>
+</label>
+<span class="text-sm text-gray-600">Offer a reward for this item</span>
+</div>
+<div class="hidden" id="reward-details">
+<div class="flex items-center">
+<div class="relative w-32">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500">$</span>
+</div>
+<input type="number" class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Amount">
+</div>
+<input type="text" class="flex-grow border-l-0 border border-gray-300 rounded-r py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Description (e.g. No questions asked)">
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-between">
+<button type="button" class="text-gray-600 hover:text-gray-800 flex items-center whitespace-nowrap" id="back-to-step-1">
+<i class="ri-arrow-left-line mr-1"></i> Back
+</button>
+<button type="button" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap" id="next-to-step-3">Continue to Location</button>
+</div>
+</div>
+</div>
+<!-- Step 3: Location Information -->
+<div id="step-3" class="form-step bg-white rounded shadow-sm overflow-hidden mb-6 hidden">
+<div class="p-4 border-b flex justify-between items-center">
+<h3 class="text-lg font-medium text-gray-800">Location Information</h3>
+<button type="button" class="text-gray-400 hover:text-gray-600" id="toggle-step-3">
+<i class="ri-arrow-up-s-line ri-lg"></i>
+</button>
+</div>
+<div class="p-6 step-content">
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Mark Location on Map</label>
+<p class="text-sm text-gray-500 mb-2">Click on the map to place a pin where the item was lost or found</p>
+<div class="relative map-container h-[300px] rounded overflow-hidden">
+<div id="map-pin" class="hidden">
+<svg class="map-pin" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 22C12 22 20 16 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 16 12 22 12 22Z" fill="#3b82f6" stroke="white" stroke-width="2"/>
+<circle cx="12" cy="10" r="3" fill="white"/>
+</svg>
+</div>
+<div class="absolute bottom-4 right-4 flex flex-col gap-2">
+<button type="button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-add-line"></i>
+</button>
+<button type="button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-subtract-line"></i>
+</button>
+<button type="button" class="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-gray-700 hover:bg-gray-100">
+<i class="ri-map-pin-user-line"></i>
+</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g. 123 University Ave">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Building/Area</label>
+<div class="relative">
+<select class="w-full appearance-none bg-white border border-gray-300 rounded py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+<option>Select location</option>
+<option>Library</option>
+<option>Student Center</option>
+<option>Science Building</option>
+<option>Engineering Building</option>
+<option>Arts Building</option>
+<option>Sports Complex</option>
+<option>Cafeteria</option>
+<option>Dormitory</option>
+<option>Parking Lot</option>
+<option>Other</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Specific Location Details</label>
+<textarea class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-24" placeholder="Provide additional details about the location (e.g. 2nd floor near the elevators, table near the window, etc.)"></textarea>
+</div>
+<div class="mt-6 flex justify-between">
+<button type="button" class="text-gray-600 hover:text-gray-800 flex items-center whitespace-nowrap" id="back-to-step-2">
+<i class="ri-arrow-left-line mr-1"></i> Back
+</button>
+<button type="button" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap" id="next-to-step-4">Continue to Contact Details</button>
+</div>
+</div>
+</div>
+<!-- Step 4: Contact Details -->
+<div id="step-4" class="form-step bg-white rounded shadow-sm overflow-hidden mb-6 hidden">
+<div class="p-4 border-b flex justify-between items-center">
+<h3 class="text-lg font-medium text-gray-800">Contact Details</h3>
+<button type="button" class="text-gray-400 hover:text-gray-600" id="toggle-step-4">
+<i class="ri-arrow-up-s-line ri-lg"></i>
+</button>
+</div>
+<div class="p-6 step-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+<input type="text" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Your full name">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+<input type="email" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Your email address">
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+<input type="tel" class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Your phone number (optional)">
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">Preferred Contact Method</label>
+<div class="relative">
+<select class="w-full appearance-none bg-white border border-gray-300 rounded py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+<option>Email</option>
+<option>Phone</option>
+<option>Both</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Privacy Settings</label>
+<div class="space-y-3">
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox checked" id="notify-checkbox"></div>
+<span class="text-sm">Notify me when potential matches are found</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox checked" id="share-contact-checkbox"></div>
+<span class="text-sm">Share my contact information with potential matches</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="custom-checkbox" id="public-listing-checkbox"></div>
+<span class="text-sm">Make this listing public (visible to everyone)</span>
+</label>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+<textarea class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-24" placeholder="Any additional information you'd like to provide..."></textarea>
+</div>
+<div class="mt-6 flex justify-between">
+<button type="button" class="text-gray-600 hover:text-gray-800 flex items-center whitespace-nowrap" id="back-to-step-3">
+<i class="ri-arrow-left-line mr-1"></i> Back
+</button>
+<button type="submit" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Submit Report</button>
+</div>
+</div>
+</div>
+<!-- Save Draft & Cancel Buttons -->
+<div class="flex justify-between mb-8">
+<a href="https://readdy.ai/home/d572bb9d-cf94-46fe-8d8f-0fa6f19de4c8/8a67f91f-86cc-47f0-aecd-12694c845859" data-readdy="true" class="text-gray-600 hover:text-gray-800 whitespace-nowrap">Cancel and Return</a>
+<button type="button" class="text-primary hover:text-blue-700 whitespace-nowrap" id="save-draft">
+<i class="ri-draft-line mr-1"></i> Save as Draft
+</button>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white border-t mt-auto">
+<div class="container mx-auto px-4 py-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div>
+<div class="flex items-center space-x-2 mb-4">
+<span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+<h2 class="text-lg font-semibold text-gray-800">Campus Lost & Found</h2>
+</div>
+<p class="text-gray-600 text-sm">Helping campus community members reconnect with their lost belongings since 2025.</p>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Quick Links</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="https://readdy.ai/home/d572bb9d-cf94-46fe-8d8f-0fa6f19de4c8/8a67f91f-86cc-47f0-aecd-12694c845859" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a></li>
+<li><a href="#" class="text-primary">Submit Report</a></li>
+<li><a href="https://readdy.ai/home/d572bb9d-cf94-46fe-8d8f-0fa6f19de4c8/f2c53ee6-25c1-4e04-abd2-0cffdc409dec" data-readdy="true" class="text-gray-600 hover:text-primary">My Reports</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">FAQ</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Support</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="#" class="text-gray-600 hover:text-primary">Contact Us</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Help Center</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Report an Issue</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Feedback</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-gray-800 font-medium mb-4">Legal</h3>
+<ul class="space-y-2 text-sm">
+<li><a href="#" class="text-gray-600 hover:text-primary">Terms of Service</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Privacy Policy</a></li>
+<li><a href="#" class="text-gray-600 hover:text-primary">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+<p class="text-sm text-gray-600">© 2025 Campus Lost & Found. All rights reserved.</p>
+<div class="flex space-x-4 mt-4 md:mt-0">
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-facebook-fill ri-lg"></i>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-twitter-fill ri-lg"></i>
+</a>
+<a href="#" class="text-gray-600 hover:text-primary">
+<i class="ri-instagram-fill ri-lg"></i>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- Success Modal -->
+<div id="success-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+<div class="absolute inset-0 bg-black bg-opacity-50"></div>
+<div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative z-10">
+<div class="text-center">
+<div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-green-100 rounded-full text-green-500">
+<i class="ri-check-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold text-gray-900 mb-2">Report Submitted Successfully!</h3>
+<p class="text-gray-600 mb-6">Your report has been submitted and will be processed shortly. You will receive a confirmation email with the details.</p>
+<div class="flex justify-center gap-4">
+<a href="https://readdy.ai/home/d572bb9d-cf94-46fe-8d8f-0fa6f19de4c8/8a67f91f-86cc-47f0-aecd-12694c845859" data-readdy="true" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-blue-600 transition-colors whitespace-nowrap">Return to Home</a>
+<button type="button" class="bg-white text-gray-700 border border-gray-300 px-6 py-2 rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap" id="close-modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Scripts -->
+<script id="form-navigation-script">
+document.addEventListener('DOMContentLoaded', function() {
+// Step navigation
+const nextToStep2 = document.getElementById('next-to-step-2');
+const nextToStep3 = document.getElementById('next-to-step-3');
+const nextToStep4 = document.getElementById('next-to-step-4');
+const backToStep1 = document.getElementById('back-to-step-1');
+const backToStep2 = document.getElementById('back-to-step-2');
+const backToStep3 = document.getElementById('back-to-step-3');
+const step1 = document.getElementById('step-1');
+const step2 = document.getElementById('step-2');
+const step3 = document.getElementById('step-3');
+const step4 = document.getElementById('step-4');
+const progressSteps = document.querySelectorAll('.progress-step');
+nextToStep2.addEventListener('click', function() {
+step1.classList.add('hidden');
+step2.classList.remove('hidden');
+progressSteps[0].classList.add('completed');
+progressSteps[1].classList.add('active');
+});
+nextToStep3.addEventListener('click', function() {
+step2.classList.add('hidden');
+step3.classList.remove('hidden');
+progressSteps[1].classList.add('completed');
+progressSteps[2].classList.add('active');
+});
+nextToStep4.addEventListener('click', function() {
+step3.classList.add('hidden');
+step4.classList.remove('hidden');
+progressSteps[2].classList.add('completed');
+progressSteps[3].classList.add('active');
+});
+backToStep1.addEventListener('click', function() {
+step2.classList.add('hidden');
+step1.classList.remove('hidden');
+progressSteps[0].classList.remove('completed');
+progressSteps[1].classList.remove('active');
+});
+backToStep2.addEventListener('click', function() {
+step3.classList.add('hidden');
+step2.classList.remove('hidden');
+progressSteps[1].classList.remove('completed');
+progressSteps[2].classList.remove('active');
+});
+backToStep3.addEventListener('click', function() {
+step4.classList.add('hidden');
+step3.classList.remove('hidden');
+progressSteps[2].classList.remove('completed');
+progressSteps[3].classList.remove('active');
+});
+// Toggle sections
+const toggleStep1 = document.getElementById('toggle-step-1');
+const toggleStep2 = document.getElementById('toggle-step-2');
+const toggleStep3 = document.getElementById('toggle-step-3');
+const toggleStep4 = document.getElementById('toggle-step-4');
+const stepContents = document.querySelectorAll('.step-content');
+toggleStep1.addEventListener('click', function() {
+stepContents[0].classList.toggle('hidden');
+toggleStep1.querySelector('i').classList.toggle('ri-arrow-up-s-line');
+toggleStep1.querySelector('i').classList.toggle('ri-arrow-down-s-line');
+});
+toggleStep2.addEventListener('click', function() {
+stepContents[1].classList.toggle('hidden');
+toggleStep2.querySelector('i').classList.toggle('ri-arrow-up-s-line');
+toggleStep2.querySelector('i').classList.toggle('ri-arrow-down-s-line');
+});
+toggleStep3.addEventListener('click', function() {
+stepContents[2].classList.toggle('hidden');
+toggleStep3.querySelector('i').classList.toggle('ri-arrow-up-s-line');
+toggleStep3.querySelector('i').classList.toggle('ri-arrow-down-s-line');
+});
+toggleStep4.addEventListener('click', function() {
+stepContents[3].classList.toggle('hidden');
+toggleStep4.querySelector('i').classList.toggle('ri-arrow-up-s-line');
+toggleStep4.querySelector('i').classList.toggle('ri-arrow-down-s-line');
+});
+// Form submission
+const reportForm = document.getElementById('report-form');
+const successModal = document.getElementById('success-modal');
+const closeModal = document.getElementById('close-modal');
+reportForm.addEventListener('submit', function(e) {
+e.preventDefault();
+successModal.classList.remove('hidden');
+});
+closeModal.addEventListener('click', function() {
+successModal.classList.add('hidden');
+});
+// Save draft button
+const saveDraft = document.getElementById('save-draft');
+saveDraft.addEventListener('click', function() {
+alert('Your report has been saved as a draft.');
+});
+});
+</script>
+<script id="checkbox-toggle-script">
+document.addEventListener('DOMContentLoaded', function() {
+// Item status toggle
+const lostCheckbox = document.getElementById('lost-checkbox');
+const foundCheckbox = document.getElementById('found-checkbox');
+lostCheckbox.addEventListener('click', function() {
+lostCheckbox.classList.add('checked');
+foundCheckbox.classList.remove('checked');
+});
+foundCheckbox.addEventListener('click', function() {
+foundCheckbox.classList.add('checked');
+lostCheckbox.classList.remove('checked');
+});
+// Privacy checkboxes
+const notifyCheckbox = document.getElementById('notify-checkbox');
+const shareContactCheckbox = document.getElementById('share-contact-checkbox');
+const publicListingCheckbox = document.getElementById('public-listing-checkbox');
+notifyCheckbox.addEventListener('click', function() {
+notifyCheckbox.classList.toggle('checked');
+});
+shareContactCheckbox.addEventListener('click', function() {
+shareContactCheckbox.classList.toggle('checked');
+});
+publicListingCheckbox.addEventListener('click', function() {
+publicListingCheckbox.classList.toggle('checked');
+});
+// Reward toggle
+const rewardToggle = document.getElementById('reward-toggle');
+const rewardDetails = document.getElementById('reward-details');
+rewardToggle.addEventListener('change', function() {
+if (this.checked) {
+rewardDetails.classList.remove('hidden');
+} else {
+rewardDetails.classList.add('hidden');
+}
+});
+});
+</script>
+<script id="map-interaction-script">
+document.addEventListener('DOMContentLoaded', function() {
+const mapContainer = document.querySelector('.map-container');
+const mapPin = document.getElementById('map-pin');
+mapContainer.addEventListener('click', function(e) {
+const rect = mapContainer.getBoundingClientRect();
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+mapPin.style.left = x + 'px';
+mapPin.style.top = y + 'px';
+mapPin.classList.remove('hidden');
+});
+});
+</script>
+<script id="photo-upload-script">
+document.addEventListener('DOMContentLoaded', function() {
+const photoUpload = document.getElementById('photo-upload');
+const previewContainer = document.getElementById('preview-container');
+const dropZone = document.getElementById('drop-zone');
+photoUpload.addEventListener('change', handleFiles);
+function handleFiles() {
+const files = this.files;
+for (let i = 0; i < files.length; i++) {
+if (previewContainer.children.length >= 5) {
+alert('Maximum 5 photos allowed');
+break;
+}
+const file = files[i];
+if (!file.type.startsWith('image/')) continue;
+const reader = new FileReader();
+reader.onload = function(e) {
+const preview = document.createElement('div');
+preview.className = 'relative';
+preview.innerHTML = `
+<img src="${e.target.result}" class="w-full h-24 object-cover rounded">
+<button type="button" class="absolute top-1 right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-red-500">
+<i class="ri-close-line"></i>
+</button>
+`;
+preview.querySelector('button').addEventListener('click', function() {
+preview.remove();
+});
+previewContainer.appendChild(preview);
+};
+reader.readAsDataURL(file);
+}
+}
+// Drag and drop functionality
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+dropZone.addEventListener(eventName, preventDefaults, false);
+});
+function preventDefaults(e) {
+e.preventDefault();
+e.stopPropagation();
+}
+['dragenter', 'dragover'].forEach(eventName => {
+dropZone.addEventListener(eventName, highlight, false);
+});
+['dragleave', 'drop'].forEach(eventName => {
+dropZone.addEventListener(eventName, unhighlight, false);
+});
+function highlight() {
+dropZone.classList.add('drag-over');
+}
+function unhighlight() {
+dropZone.classList.remove('drag-over');
+}
+dropZone.addEventListener('drop', handleDrop, false);
+function handleDrop(e) {
+const dt = e.dataTransfer;
+const files = dt.files;
+photoUpload.files = files;
+handleFiles.call(photoUpload);
+}
+});
+</script>
+<script id="color-swatch-script">
+document.addEventListener('DOMContentLoaded', function() {
+const colorSwatches = document.querySelectorAll('.color-swatch');
+const selectedColorInput = document.getElementById('selected-color');
+colorSwatches.forEach(swatch => {
+swatch.addEventListener('click', function() {
+colorSwatches.forEach(s => s.classList.remove('selected'));
+this.classList.add('selected');
+selectedColorInput.value = this.getAttribute('data-color');
+});
+});
+});
+</script>
+</body>
+</html>
